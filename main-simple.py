@@ -23,7 +23,7 @@ learning_rate = 0.002
 
 # Load "Penn Treebank" dataset
 corpus = Corpus()
-ids = corpus.get_data('data/train.txt', batch_size)
+ids = corpus.get_data('data/penn/train.txt', batch_size)
 vocab_size = len(corpus.dictionary)
 num_batches = ids.size(1) // seq_length
 
@@ -89,7 +89,7 @@ for epoch in range(num_epochs):
 
 # Test the model
 with torch.no_grad():
-    with open('sample.txt', 'w') as f:
+    with open('data/penn/test.txt', 'w') as f:
         # Set intial hidden ane cell states
         state = (torch.zeros(num_layers, 1, hidden_size).to(device),
                  torch.zeros(num_layers, 1, hidden_size).to(device))
