@@ -77,7 +77,7 @@ for epoch in range(num_epochs):
         states = detach(states)
         outputs, states = model(inputs, states)
         loss = criterion(outputs, targets.reshape(-1)) # in here the targets.reshape(-1) is the same as the .t() transpose in the batchify
-        loss_sum += loss.item
+        loss_sum += loss.item()
 
         # Backward and optimize
         optimizer.zero_grad()
