@@ -20,6 +20,7 @@ num_samples = 1000     # number of words to be sampled
 batch_size = 20
 seq_length = 30
 learning_rate = 0.002
+log_interval = 100
 
 # Load "Penn Treebank" dataset
 corpus = Corpus()
@@ -66,6 +67,7 @@ for epoch in range(num_epochs):
     states = (torch.zeros(num_layers, batch_size, hidden_size).to(device),
               torch.zeros(num_layers, batch_size, hidden_size).to(device))
     
+    loss_sum = 0
     for i in range(0, ids.size(1) - seq_length, seq_length):
         # Get mini-batch inputs and targets
         inputs = ids[:, i:i+seq_length].to(device)
@@ -74,8 +76,9 @@ for epoch in range(num_epochs):
         # Forward pass
         states = detach(states)
         outputs, states = model(inputs, states)
-        loss = criterion(outputs, targets.reshape(-1))
-        
+        loss = criterion(outputs, targets.reshape(-1)) # in here the targets.reshape(-1) is the same as the .t() transpose in the batchify
+        loss_sum += loss.item
+
         # Backward and optimize
         optimizer.zero_grad()
         loss.backward()
@@ -83,9 +86,11 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         step = (i+1) // seq_length
-        if step % 100 == 0:
+        if step % log_interval == 0:
+            loss_avg = loss_sum / log_interval
+            loss_sum = 0
             print ('Epoch [{}/{}], Step[{}/{}], Loss: {:.4f}, Perplexity: {:5.2f}'
-                   .format(epoch+1, num_epochs, step, num_batches, loss.item(), np.exp(loss.item())))
+                   .format(epoch+1, num_epochs, step, num_batches, loss_avg, np.exp(loss_avg)))
 
 # Test the model
 with torch.no_grad():
