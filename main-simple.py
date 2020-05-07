@@ -31,12 +31,18 @@ num_batches = ids.size(1) // seq_length
 
 # RNN based language model
 class RNNLM(nn.Module):
-    def __init__(self, vocab_size, embed_size, hidden_size, num_layers):
+    def __init__(
+            self,
+            vocab_size,
+            embed_size,
+            hidden_size,
+            num_layers
+        ):
         super(RNNLM, self).__init__()
         self.embed = nn.Embedding(vocab_size, embed_size)
         self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, batch_first=True)
         self.linear = nn.Linear(hidden_size, vocab_size)
-        
+
     def forward(self, x, h):
         # Embed word ids to vectors
         x = self.embed(x)
@@ -61,6 +67,42 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 def detach(states):
     return [state.detach() for state in states] 
 
+def evaluate(model, epoch, test_data=None, batch_size=10):
+    test_ids = corpus.get_data('data/penn/valid.txt', batch_size)
+    # Turn on evaluation mode which disables dropout.
+    model.eval()
+    states = (torch.zeros(num_layers, batch_size, hidden_size).to(device),
+              torch.zeros(num_layers, batch_size, hidden_size).to(device))
+
+    loss_sum = 0
+    loss_total = 0
+    num_batches_test = test_ids.size(1) // seq_length
+    for i in range(0, test_ids.size(1) - seq_length, seq_length):
+        # Get mini-batch inputs and targets
+        inputs = test_ids[:, i:i+seq_length].to(device)
+        targets = test_ids[:, (i+1):(i+1)+seq_length].to(device)
+
+        # Forward pass
+        outputs, states = model(inputs, states)
+        loss = criterion(outputs, targets.reshape(-1)) # in here the targets.reshape(-1) is the same as the .t() transpose in the batchify
+
+        loss_sum += loss.item()
+        loss_total += loss.item()
+
+        states = detach(states)
+        step = (i+1) // seq_length
+        if step % log_interval == 0 and i != 0:
+            loss_avg = loss_sum / log_interval
+            loss_sum = 0
+            print ('Epoch [{}/{}], Step[{}/{}], Loss: {:.4f}, Perplexity: {:5.2f}'
+                   .format(epoch+1, num_epochs, step, num_batches_test, loss_avg, np.exp(loss_avg)))
+
+    loss_avg = loss_total / num_batches_test
+    print('-'*20, f'End of epoch {epoch+1}', '-'*20)
+    print('Epoch [{}/{}] | Validation Loss: {:.4f} | Validation Perplexity: {:5.2f}'
+                   .format(epoch+1, num_epochs, loss_avg, np.exp(loss_avg)))
+    print('-'*60)
+
 # Train the model
 for epoch in range(num_epochs):
     # Set initial hidden and cell states
@@ -73,8 +115,11 @@ for epoch in range(num_epochs):
         inputs = ids[:, i:i+seq_length].to(device)
         targets = ids[:, (i+1):(i+1)+seq_length].to(device)
         
-        # Forward pass
+        # Starting each batch, we detach the hidden state from how it was previously produced.
+        # If we didn't, the model would try backpropagating all the way to start of the dataset.
         states = detach(states)
+
+        # Forward pass
         outputs, states = model(inputs, states)
         loss = criterion(outputs, targets.reshape(-1)) # in here the targets.reshape(-1) is the same as the .t() transpose in the batchify
         loss_sum += loss.item()
@@ -86,11 +131,13 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         step = (i+1) // seq_length
-        if step % log_interval == 0:
+        if step % log_interval == 0 and i != 0:
             loss_avg = loss_sum / log_interval
             loss_sum = 0
             print ('Epoch [{}/{}], Step[{}/{}], Loss: {:.4f}, Perplexity: {:5.2f}'
                    .format(epoch+1, num_epochs, step, num_batches, loss_avg, np.exp(loss_avg)))
+
+    evaluate(model, epoch)
 
 # Test the model
 with torch.no_grad():
