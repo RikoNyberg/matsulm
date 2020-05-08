@@ -1,6 +1,11 @@
-import torch
+import time
 import os
+import logging
+import functools
+import itertools
+from flatten_dict import flatten, unflatten
 
+import torch
 
 class Dictionary(object):
     def __init__(self):
@@ -60,3 +65,41 @@ class Corpus(object):
         if args.cuda:
             data = data.cuda()
         return data
+    
+def create_parameter_grid(parameters):
+    
+    """
+    Creates all parameter combinations from a dict of parameters like: 
+    {
+        "input_length": 300,
+        "layer_parameters": {
+            "conv": {"in_channels": 300, "out_channels": [300, 200, 100], "kernel_size": [4,5]},
+            "maxpool": {"kernel_size": [4,5]},
+            "fc": {"out_features": 27, "bias": True},
+            "dropout": {"p": [0.5, 0.75, 0.9]},
+        },
+        "lr": [0.01, 0.001, 0.0001],
+        "batch_size": [64, 128, 256]
+    }
+    
+    
+    """
+
+    def wrap_value_to_list(value):
+        if hasattr(value, "__iter__"): 
+            return value 
+        else: 
+            return [value]
+
+    def combine_values_with_keys(values, keys):
+        return {key_value[0]: key_value[1] for key_value in zip(keys, values)}
+
+    flattened_dict = flatten(parameters, reducer="path")
+    flattened_dict = {key: wrap_value_to_list(value) for key, value in flattened_dict.items()}
+    
+    create_dict = functools.partial(combine_values_with_keys, keys=flattened_dict.keys())
+    unflattener = functools.partial(unflatten, splitter="path")
+    
+    parameter_combinations = map(create_dict, itertools.product(*flattened_dict.values()))
+
+    return list(map(unflattener, parameter_combinations))
