@@ -6,10 +6,10 @@ from argparse import Namespace
 from train import train_lstm_model
 
 
-def start_sacred_experiment(train_data, valid_data, test_data, params=params, verbose_logging=True):
+def start_sacred_experiment(train_data, valid_data, test_data, params, verbose_logging=True):
     ex = Experiment('LSTM2')
     ex.add_config(params)
-    from credentials import mongo_url
+    mongo_url = 'mongodb+srv://username:password@XXXXX.mongodb.net/sacred'
     ex.observers.append(MongoObserver.create(url=mongo_url))
     ex.captured_out_filter = apply_backspaces_and_linefeeds
 
@@ -35,13 +35,14 @@ def start_sacred_experiment(train_data, valid_data, test_data, params=params, ve
             'lr_decay': lr_decay,
             'clip_norm': clip_norm,
         }
-        
-        _, results = train_lstm_model(
+
+        return train_lstm_model(
                     train_data,
                     valid_data,
                     test_data,
                     params=params,
-                    verbose_logging=True
+                    verbose_logging=True,
+                    ex=ex,
                     )
-
+    
     r = ex.run()
