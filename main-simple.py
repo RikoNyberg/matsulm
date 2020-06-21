@@ -16,13 +16,13 @@ from data_utils import Corpus, create_parameter_grid
 from flatten_dict import flatten, unflatten
 import os
 
-from train import train_lstm_model
+from train import LanguageModelTrainer
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
 
-def hyperparameter_tune_lstm(data_path, sacred_experiment=False):
+def hyperparameter_tune_language_model(data_path, sacred_experiment=False):
     parameters = {
         'model': {
             'num_layers': 1,
@@ -33,12 +33,12 @@ def hyperparameter_tune_lstm(data_path, sacred_experiment=False):
             'init_bias': 0,
             'forget_bias': 0,
         },
-        'log_interval': 300,
+        'log_interval': [1000,200],
         'cuda': [True],
         'seed': 313,
         'weight_decay': 0,
         'optimizer': ["sgd"],
-        'num_epochs': 20,
+        'num_epochs': 2,
         'lr_decay_start': 20,
         'lr': 1,
         'seq_length': 35,
@@ -55,43 +55,31 @@ def hyperparameter_tune_lstm(data_path, sacred_experiment=False):
     test_data = corpus.get_data(os.path.join(data_path, 'test.txt'), parameters['batch_size'])
 
     parameters['model']['vocab_size'] = len(corpus.dictionary)
-    print('vocab_size: ', parameters['model']['vocab_size'])
     
     all_results = []
-
     all_parameters = create_parameter_grid(parameters)
     
     for index, params in enumerate(all_parameters):
         LOGGER.info("\nTuning %s/%s", index+1, len(all_parameters))
         LOGGER.info("Parameters: %s", json.dumps(params, indent=4, default=str))
         start = time.time()
- 
+        lm_trainer = LanguageModelTrainer(train_data, valid_data, test_data, params)
+        
         if sacred_experiment:
             from sacred_experiment import start_sacred_experiment
-            _, results = start_sacred_experiment(
-                train_data,
-                valid_data,
-                test_data,
-                params,
-                verbose_logging=True
-                )
+            start_sacred_experiment(lm_trainer, params)
 
         else:
-            _, results = train_lstm_model(
-                train_data,
-                valid_data,
-                test_data,
-                params,
-                verbose_logging=True
-                )
-            
-        # LOGGER.info("Results: %s", json.dumps(results, indent=4, default=str))
+            lm_trainer.train_model()
+
+
+        LOGGER.info("Results: %s", json.dumps(lm_trainer.get_results(), indent=4, default=str))
         LOGGER.info("Training took: %ss", time.time()-start)
-        all_results.append({"parameters": params, "results": results})
-        
+        all_results.append({"parameters": params, "results": lm_trainer.get_results()})
+
     
     return all_results
 
 
-#hyperparameter_tune_lstm('data/wikitext-2/', sacred_experiment = True)
-hyperparameter_tune_lstm('data/penn/', sacred_experiment = True)
+#all_results = hyperparameter_tune_language_model('data/wikitext-2/', sacred_experiment = True)
+all_results = hyperparameter_tune_language_model('data/penn/', sacred_experiment = True)
