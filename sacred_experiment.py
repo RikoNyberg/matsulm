@@ -9,7 +9,7 @@ from flatten_dict import flatten
 def start_sacred_experiment(lm_trainer, params, mongo_url_for_sacred):
     ex = Experiment('MatsuLM')
     parameters = flatten(params, reducer='path')
-    ex.add_config(parameters
+    ex.add_config(parameters)
     ex.observers.append(MongoObserver.create(url=mongo_url_for_sacred))
     ex.captured_out_filter = apply_backspaces_and_linefeeds
 

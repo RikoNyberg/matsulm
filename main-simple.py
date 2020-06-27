@@ -5,15 +5,10 @@
 # https://github.com/pytorch/examples/tree/master/word_language_model
 # https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model
 import logging
+import argparse
 import json
 import time
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
-from torch.nn.utils import clip_grad_norm_
 from data_utils import Corpus, create_parameter_grid
-from flatten_dict import flatten, unflatten
 import os
 
 from train import LanguageModelTrainer
@@ -21,8 +16,13 @@ from train import LanguageModelTrainer
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
+parser = argparse.ArgumentParser(description='MatsuLM')
+parser.add_argument('--mongo_url_for_sacred', type=str, default='',
+                    help='MongoDB url to save the Sacred experiment parameters and results')
+args = parser.parse_args()
 
-def hyperparameter_tune_language_model(data_path, sacred_experiment=False):
+
+def hyperparameter_tune_language_model(data_path, mongo_url_for_sacred=''):
     parameters = {
         'model': {
             'num_layers': 1,
@@ -65,9 +65,9 @@ def hyperparameter_tune_language_model(data_path, sacred_experiment=False):
         start = time.time()
         lm_trainer = LanguageModelTrainer(train_data, valid_data, test_data, params)
         
-        if sacred_experiment:
+        if mongo_url_for_sacred:
             from sacred_experiment import start_sacred_experiment
-            start_sacred_experiment(lm_trainer, params)
+            start_sacred_experiment(lm_trainer, params, mongo_url_for_sacred)
 
         else:
             lm_trainer.train_model()
@@ -82,4 +82,4 @@ def hyperparameter_tune_language_model(data_path, sacred_experiment=False):
 
 
 #all_results = hyperparameter_tune_language_model('data/wikitext-2/', sacred_experiment = True)
-all_results = hyperparameter_tune_language_model('data/penn/', sacred_experiment = True)
+all_results = hyperparameter_tune_language_model('data/penn/', mongo_url=args.mongo_url_for_sacred)
