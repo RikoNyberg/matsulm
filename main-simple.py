@@ -81,5 +81,5 @@ def hyperparameter_tune_language_model(data_path, mongo_url_for_sacred=''):
     return all_results
 
 
-#all_results = hyperparameter_tune_language_model('data/wikitext-2/', sacred_experiment = True)
-all_results = hyperparameter_tune_language_model('data/penn/', mongo_url=args.mongo_url_for_sacred)
+#all_results = hyperparameter_tune_language_model('data/wikitext-2/', mongo_url_for_sacred=args.mongo_url_for_sacred)
+all_results = hyperparameter_tune_language_model('data/penn/', mongo_url_for_sacred=args.mongo_url_for_sacred)
