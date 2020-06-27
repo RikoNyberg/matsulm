@@ -25,7 +25,12 @@ class LanguageModelTrainer():
         self.test_data = test_data
         self.p = params
         
-        self.device = torch.device('cuda' if self.p['cuda'] and torch.cuda.is_available() else 'cpu')
+        if self.p['cuda'] and torch.cuda.is_available():
+            device = 'cuda'
+        else:
+            device = 'cpu'
+        print(f'--- Running training on {device} ---')
+        self.device = torch.device(device)
         
         self.build_model()
 
