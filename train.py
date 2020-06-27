@@ -121,7 +121,7 @@ class LanguageModelTrainer():
 
             # Forward pass
             outputs, states = self.model(inputs, states)
-            loss = self.criterion(outputs, targets.reshape(-1)) # in here the targets.reshape(-1) is the same as the .t() transpose in the batchify
+            loss = self.criterion(outputs, targets.reshape(-1)) # in here the targets.reshape(-1) is the same as the .t() transpose
             losses.append(loss.item())
 
             if train:
