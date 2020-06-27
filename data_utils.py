@@ -1,5 +1,5 @@
 # Some part of the code was referenced from:
-# https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model
+# https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model 
 
 import time
 import os
