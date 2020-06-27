@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Some part of the code was referenced from below.
+# Some part of the code was referenced from:
 # https://github.com/pytorch/examples/tree/master/word_language_model
-# https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model
+
 import logging
 import argparse
 import json
@@ -17,12 +17,14 @@ logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(description='MatsuLM')
-parser.add_argument('--mongo_url_for_sacred', type=str, default='',
+parser.add_argument('--sacred_mongo', type=str, default='',
                     help='MongoDB url to save the Sacred experiment parameters and results')
+parser.add_argument('--data', type=str, default='',
+                    help='Path to the training, testing, and validation data ("data/example")')
 args = parser.parse_args()
 
 
-def hyperparameter_tune_language_model(data_path, mongo_url_for_sacred=''):
+def hyperparameter_tune_language_model(data_path, sacred_mongo=''):
     parameters = {
         'model': {
             'num_layers': 1,
@@ -33,8 +35,8 @@ def hyperparameter_tune_language_model(data_path, mongo_url_for_sacred=''):
             'init_bias': 0,
             'forget_bias': 0,
         },
-        'log_interval': [1000,200],
-        'cuda': [True],
+        'log_interval': 200,
+        'cuda': True,
         'seed': 313,
         'weight_decay': 0,
         'optimizer': ["sgd"],
@@ -65,9 +67,9 @@ def hyperparameter_tune_language_model(data_path, mongo_url_for_sacred=''):
         start = time.time()
         lm_trainer = LanguageModelTrainer(train_data, valid_data, test_data, params)
         
-        if mongo_url_for_sacred:
+        if sacred_mongo:
             from sacred_experiment import start_sacred_experiment
-            start_sacred_experiment(lm_trainer, params, mongo_url_for_sacred)
+            start_sacred_experiment(lm_trainer, params, sacred_mongo)
 
         else:
             lm_trainer.train_model()
@@ -81,5 +83,11 @@ def hyperparameter_tune_language_model(data_path, mongo_url_for_sacred=''):
     return all_results
 
 
-#all_results = hyperparameter_tune_language_model('data/wikitext-2/', mongo_url_for_sacred=args.mongo_url_for_sacred)
-all_results = hyperparameter_tune_language_model('data/penn/', mongo_url_for_sacred=args.mongo_url_for_sacred)
+
+if args.data:
+    all_results = hyperparameter_tune_language_model(args.data, sacred_mongo=args.sacred_mongo)
+else:
+    #all_results = hyperparameter_tune_language_model('data/wikitext-2/', sacred_mongo=args.sacred_mongo)
+    all_results = hyperparameter_tune_language_model('data/penn/', sacred_mongo=args.sacred_mongo)
+
+print(all_results)

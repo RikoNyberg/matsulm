@@ -1,3 +1,6 @@
+# Some part of the code was referenced from:
+# https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model
+
 import time
 import os
 import logging
@@ -53,7 +56,7 @@ class Corpus(object):
         ids = ids[:num_batches*batch_size]
         # Evenly divide the data across the bsz batches.
         return ids.view(batch_size, -1)
-    
+
 def create_parameter_grid(parameters):
     
     """

@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  omniboard:
+    image: vivekratnavel/omniboard:latest
+    command: ["--mu", "mongodb+srv://<USERNAME>:<PASSWORD>@<MONGO-URL>/sacred"]
+    environment:
+      VIRTUAL_HOST: omniboard.yourdomain.com
+      VIRTUAL_PORT: 9000
+      LETSENCRYPT_HOST: omniboard.yourdomain.com
+      # LETSENCRYPT_EMAIL: hello@domain.com
+    expose:
+      - 9000
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
