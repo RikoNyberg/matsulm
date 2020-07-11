@@ -40,12 +40,12 @@ $ pip3 install -r requirements.txt
 $ python3 main.py --sacred_mongo "mongodb://<username>:<password>@<host>/<database>"
 ```
 
-## Explanation of the "Quick start" commands
+### Explanation of the "Quick start" commands
 + Run `./get_data.sh` to acquire the [Penn Treebank](https://www.isca-speech.org/archive/archive_papers/interspeech_2011/i11_0605.pdf) and [WikiText-2](https://www.salesforce.com/products/einstein/ai-research/the-wikitext-dependency-language-modeling-dataset/) ([paper](https://arxiv.org/abs/1609.07843)) datasets
 + Run `$ python3 main.py` to just train the base model or run `$ python3 main.py --sacred_mongo "docker"` to save the training results to Sacred
 + (Optional) Run `$ make local_sacred_docker` to create 2 Docker containers. One contains a MongoDB where Sacred can save the training results and the other contains an UI (called Omniboard) that serves Sacred's data in http://localhost:9000/sacred
 
-### Add your own parameters, data, and hyperparameter search
+## Add your own parameters, data, and hyperparameter search
 + Add your own parameters to `main.py`
 + Add your own training data by creating a folder with _test.txt_, _train.txt_, and _valid.txt_ files and the folder's path as a parameter. For example, `$ python3 main.py --data "data/example/"`
 + Add your own hyperparameter search by listing parameters to `parameters` dictionary in `main.py`
