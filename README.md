@@ -6,6 +6,8 @@
 
 This tool was made for the [Department of Signal Processing and Acoustics](https://www.aalto.fi/en/department-of-signal-processing-and-acoustics) at [Aalto University](https://www.aalto.fi/en) as a Master's Thesis. The Master's Thesis can be found in here: [MatsuLM](https://riko.io/matsulm)
 
+The tracking of the language model training results has been done with [Sacred](https://github.com/IDSIA/sacred) and the recommended tool for representing results is [OmniBoard](https://github.com/vivekratnavel/omniboard).
+
 ## Quick start
 
 ### Run and view results from terminal
