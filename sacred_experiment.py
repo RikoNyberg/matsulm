@@ -10,9 +10,10 @@ def start_sacred_experiment(lm_trainer, params, sacred_mongo):
     ex = Experiment('MatsuLM')
     parameters = flatten(params, reducer='path')
     ex.add_config(parameters)
-
     if sacred_mongo == 'docker':
-        ex.observers.append(MongoObserver.create(url=f'mongodb://sample:password@localhost:27017/?authMechanism=SCRAM-SHA-1', db_name='db'))
+        ex.observers.append(MongoObserver.create(
+            url=f'mongodb://sample:password@localhost:27017/?authMechanism=SCRAM-SHA-1',
+            db_name='db'))
     else:
         ex.observers.append(MongoObserver.create(url=sacred_mongo))
 
@@ -21,5 +22,4 @@ def start_sacred_experiment(lm_trainer, params, sacred_mongo):
     @ex.main
     def run():
         lm_trainer.train_model(ex=ex)
-    
     r = ex.run()

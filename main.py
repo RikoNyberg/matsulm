@@ -40,11 +40,11 @@ def hyperparameter_tune_language_model(data_path, sacred_mongo=''):
         'seed': 313,
         'weight_decay': 0,
         'optimizer': ["sgd"],
-        'num_epochs': 2,
-        'lr_decay_start': 20,
         'lr': 1,
         'seq_length': 35,
         'batch_size': 20,
+        'num_epochs': 2,
+        'lr_decay_start': 20,
         'lr_decay': 0.8,
         'clip_norm': 5,
     }
