@@ -3,9 +3,9 @@ This is a **simple toolkit** to help the research and development of neural lang
 
 The tracking of the language model training results has been done with [Sacred](https://github.com/IDSIA/sacred) and the recommended tool for representing results is [OmniBoard](https://github.com/vivekratnavel/omniboard).
 
-# Quick start
+## Quick start
 
-## Run and view results from terminal
+### Run and view results from terminal
 
 ```
 $ ./get_data.sh
@@ -13,7 +13,7 @@ $ pip3 install -r requirements.txt
 $ python3 main.py
 ```
 
-## Run and view results from local Omniboard ([demo](https://ai.riko.io/))
+### Run and view results from local Omniboard ([demo](https://ai.riko.io/))
 
 1. [Install and run Docker](https://www.docker.com/get-started) in your machine
 2. Run the following commands:
@@ -24,7 +24,7 @@ $ python3 main.py --sacred_mongo "docker"
 ```
 3. Track the training results in http://localhost:9000/sacred
 
-## Run and save/view results from remote Omniboard ([demo](https://ai.riko.io/))
+### Run and save/view results from remote Omniboard ([demo](https://ai.riko.io/))
 For a **long term training and developing** (for example in a research project) I would suggest on creating a database to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). It is free (for this amount of data), easy to set up, and makes it convenient to train models in multiple different machines while saving all the training results in one place. 
 
 When saving the training results in the cloud, I would also recommend running the Omniboard remotely as a website like this: https://ai.riko.io/. 
@@ -45,7 +45,7 @@ $ python3 main.py --sacred_mongo "mongodb://<username>:<password>@<host>/<databa
 + Run `$ python3 main.py` to just train the base model or run `$ python3 main.py --sacred_mongo "docker"` to save the training results to Sacred
 + (Optional) Run `$ make local_sacred_docker` to create 2 Docker containers. One contains a MongoDB where Sacred can save the training results and the other contains an UI (called Omniboard) that serves Sacred's data in http://localhost:9000/sacred
 
-## Add your own parameters, data, and hyperparameter search
+### Add your own parameters, data, and hyperparameter search
 + Add your own parameters to `main.py`
 + Add your own training data by creating a folder with _test.txt_, _train.txt_, and _valid.txt_ files and the folder's path as a parameter. For example, `$ python3 main.py --data "data/example/"`
 + Add your own hyperparameter search by listing parameters to `parameters` dictionary in `main.py`
