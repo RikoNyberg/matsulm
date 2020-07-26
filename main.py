@@ -28,6 +28,7 @@ def hyperparameter_tune_language_model(data_path, sacred_mongo=''):
     parameters = {
         'model': {
             'num_layers': 1,
+            'bidirectional': True,
             'embed_size': 100,
             'hidden_size': 256,
             'init_scale': 0,

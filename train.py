@@ -65,16 +65,16 @@ class LanguageModelTrainer():
             valid_epoch_loss = self.predict(self.valid_data, train=False)
 
             if ex != None:
-                ex.log_scalar(f'ppl/train', np.exp(train_epoch_loss), epoch+1)
+                ex.log_scalar(f'ppl/train', self.get_ppl(train_epoch_loss), epoch+1)
                 ex.log_scalar(f'loss/train', train_epoch_loss, epoch+1)
-                ex.log_scalar(f'ppl/valid', np.exp(valid_epoch_loss), epoch+1)
+                ex.log_scalar(f'ppl/valid', self.get_ppl(valid_epoch_loss), epoch+1)
                 ex.log_scalar(f'loss/valid', valid_epoch_loss, epoch+1)
 
             print('-'*10, f'End of Epoch {epoch+1}', '-'*10)
             print('Train Loss: {:.4f}, Train Perplexity: {:5.2f}'
-                .format(train_epoch_loss, np.exp(train_epoch_loss)))
+                .format(train_epoch_loss, self.get_ppl(train_epoch_loss)))
             print('Valid Loss: {:.4f}, Valid Perplexity: {:5.2f}'
-                .format(valid_epoch_loss, np.exp(valid_epoch_loss)))
+                .format(valid_epoch_loss, self.get_ppl(valid_epoch_loss)))
             print('-'*40)
         
         train_epoch_loss = self.predict(self.train_data, train=True)
@@ -82,12 +82,12 @@ class LanguageModelTrainer():
         test_epoch_loss = self.predict(self.test_data, train=False)            
         print('-'*10, f'Test set results', '-'*10)
         print('Test Loss: {:.4f}, Test Perplexity: {:5.2f}'
-                .format(test_epoch_loss, np.exp(test_epoch_loss)))
+                .format(test_epoch_loss, self.get_ppl(test_epoch_loss)))
         
         self.results = {
-            'train_ppl': np.exp(train_epoch_loss),
-            'valid_ppl': np.exp(valid_epoch_loss),
-            'test_ppl': np.exp(test_epoch_loss),
+            'train_ppl': self.get_ppl(train_epoch_loss),
+            'valid_ppl': self.get_ppl(valid_epoch_loss),
+            'test_ppl': self.get_ppl(test_epoch_loss),
         }
 
     def get_results(self):
@@ -140,11 +140,14 @@ class LanguageModelTrainer():
             if step % self.p['log_interval'] == 0 and i != 0:
                 loss_mean = sum(losses[-self.p['log_interval']:]) / self.p['log_interval']
                 print('Step[{}/{}], Loss: {:.4f}, Perplexity: {:5.2f}'
-                    .format(step, data.size(1) // self.p['seq_length'], loss_mean, np.exp(loss_mean)))
+                    .format(step, data.size(1) // self.p['seq_length'], loss_mean, self.get_ppl(loss_mean)))
         
         loss_mean = sum(losses) / len(losses)
         return loss_mean
     
+    def get_ppl(self, loss):
+        return 0 if self.p['model']['bidirectional'] else np.exp(loss)
+
     # Truncated backpropagation
     def detach(self, states):
         return [state.detach() for state in states]
