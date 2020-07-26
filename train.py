@@ -80,7 +80,7 @@ class LanguageModelTrainer():
                 epoch_loss = valid_epoch_loss
                 torch.save(self.model, self.p['model_path'])
                 print(f'Best performing model saved to {self.p["model_path"]}')
-            else:
+            elif self.p['save_model']:
                 print(f'The latest language model is performing worse than the previous ones.')
             print('-'*40)
 
