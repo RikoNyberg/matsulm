@@ -47,6 +47,8 @@ def hyperparameter_tune_language_model(data_path, sacred_mongo=''):
         'lr_decay_start': 20,
         'lr_decay': 0.8,
         'clip_norm': 5,
+        'save_model': True,
+        'model_path': 'lstm_model.pt',
     }
     
     

@@ -51,6 +51,7 @@ class LanguageModelTrainer():
 
         
     def train_model(self, ex=None):
+        epoch_loss=10000
         for epoch in range(self.p['num_epochs']):
             print('#'*10, f'Epoch [{epoch+1}/{self.p["num_epochs"]}]', '#'*10)
             
@@ -75,6 +76,12 @@ class LanguageModelTrainer():
                 .format(train_epoch_loss, self.get_ppl(train_epoch_loss)))
             print('Valid Loss: {:.4f}, Valid Perplexity: {:5.2f}'
                 .format(valid_epoch_loss, self.get_ppl(valid_epoch_loss)))
+            if self.p['save_model'] and valid_epoch_loss < epoch_loss:
+                epoch_loss = valid_epoch_loss
+                torch.save(self.model, self.p['model_path'])
+                print(f'Best performing model saved to {self.p['model_path']}')
+            else:
+                print(f'The latest language model is performing worse than the previous ones.')
             print('-'*40)
         
         train_epoch_loss = self.predict(self.train_data, train=True)
