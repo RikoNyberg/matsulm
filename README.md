@@ -2,7 +2,7 @@
 
 --------------------------------------------------------------------------------
 
-**MatsuLM** is a simple Neural Language Modeling (NLM) toolkit to help the research and development of neural language models. MatsuLM is build on top of [PyTorch](https://github.com/pytorch/pytorch) and it is offering simplified tools to modify, train, and track NLM training. 
+**MatsuLM** is a simple Neural Network Language Modeling (NNLM) toolkit to help the research and development of neural language models. MatsuLM is build on top of [PyTorch](https://github.com/pytorch/pytorch) and it is offering simplified tools to modify, train, and track NNLM training. 
 
 This tool was made for the [Department of Signal Processing and Acoustics](https://www.aalto.fi/en/department-of-signal-processing-and-acoustics) at [Aalto University](https://www.aalto.fi/en) as a Master's Thesis. The Master's Thesis can be found in here: [MatsuLM](https://riko.io/matsulm)
 
@@ -80,7 +80,7 @@ $ python3 main.py --sacred_mongo "mongodb://<username>:<password>@<host>/<databa
 
 
 ## <a name="omniboard_website"></a> Run OmniBoard on a server as a website
-When results are in MongoDB Atlas but you want to make your life even more easier and access the training results anytime and anywhere, you can run your Omniboard on a server as a website. Here are the instructions for doing that:
+When results are in MongoDB Atlas and you want to make your life even more easier and access the training results anytime and anywhere, you can run your Omniboard on a server as a website. Here are the instructions for doing that:
 
 First, you have to create an Nginx-proxy to your server for controlling the traffic ([simple instruction here](https://medium.com/@francoisromain/host-multiple-websites-with-https-inside-docker-containers-on-a-single-server-18467484ab95)). After you have gone through the instructions and added `docker-compose-server.yml` (USERNAME, PASSWORD, and MONGO_URL), you can just download this repo to your server and run the following command in the folder:
 ```
