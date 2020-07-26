@@ -66,6 +66,7 @@ def hyperparameter_tune_language_model(data_path, sacred_mongo=''):
     for index, params in enumerate(all_parameters):
         LOGGER.info("\nTuning %s/%s", index+1, len(all_parameters))
         LOGGER.info("Parameters: %s", json.dumps(params, indent=4, default=str))
+        params['model_path'] = f'{index}_{params["model_path"]}'
         start = time.time()
         lm_trainer = LanguageModelTrainer(train_data, valid_data, test_data, params)
         
