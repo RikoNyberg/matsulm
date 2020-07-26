@@ -62,15 +62,27 @@ def create_parameter_grid(parameters):
     """
     Creates all parameter combinations from a dict of parameters like: 
     {
-        "input_length": 300,
-        "layer_parameters": {
-            "conv": {"in_channels": 300, "out_channels": [300, 200, 100], "kernel_size": [4,5]},
-            "maxpool": {"kernel_size": [4,5]},
-            "fc": {"out_features": 27, "bias": True},
-            "dropout": {"p": [0.5, 0.75, 0.9]},
+        'model': {
+            'num_layers': [1, 2],
+            'embed_size': [100, 200, 500],
+            'hidden_size': 256,
+            'init_scale': [0, 0.5],
+            'dropout': [0, 0.5],
+            'init_bias': [0, 0.5],
+            'forget_bias': 0,
         },
-        "lr": [0.01, 0.001, 0.0001],
-        "batch_size": [64, 128, 256]
+        'log_interval': 200,
+        'cuda': True,
+        'seed': 313,
+        'weight_decay': [0, 0.2, 0.4],
+        'optimizer': ["sgd", "adam"],
+        'lr': [1, 0.5],
+        'seq_length': 35,
+        'batch_size': 20,
+        'num_epochs': 200,
+        'lr_decay_start': 20,
+        'lr_decay': [0.8, 0.4],
+        'clip_norm': 5,
     }
     
     

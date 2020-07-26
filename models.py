@@ -1,4 +1,5 @@
 import torch.nn as nn
+import numpy as np
 
 ####################################################################################
 # MODEL
@@ -14,7 +15,6 @@ class RNNLM(nn.Module):
             bidirectional=False,
             init_scale=None,
             init_bias=0,
-            forget_bias=1,
         ):
         super(RNNLM, self).__init__()
         self.embed = nn.Embedding(vocab_size, embed_size)
