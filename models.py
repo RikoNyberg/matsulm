@@ -19,8 +19,8 @@ class RNNLM(nn.Module):
         super(RNNLM, self).__init__()
         self.embed = nn.Embedding(vocab_size, embed_size)
         self.dropout = nn.Dropout(p=dropout)
-        self.lstm = nn.LSTM(embed_size, hidden_size, dropout=dropout, num_layers=num_layers, batch_first=True) #bidirectional=bidirectional)
-        lstm_output_size = hidden_size #if not bidirectional else hidden_size * 2
+        self.lstm = nn.LSTM(embed_size, hidden_size, dropout=dropout, num_layers=num_layers, batch_first=True, bidirectional=bidirectional)
+        lstm_output_size = hidden_size if not bidirectional else hidden_size * 2
         self.linear = nn.Linear(lstm_output_size, vocab_size)
         
         # Initializing weights/bias

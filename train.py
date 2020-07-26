@@ -102,12 +102,12 @@ class LanguageModelTrainer():
         # Set initial hidden and cell states
         states = (
             torch.zeros(
-                self.p['model']['num_layers'],# * (2 if self.p['model']['bidirectional'] else 1), 
+                self.p['model']['num_layers'] * (2 if self.p['model']['bidirectional'] else 1),
                 self.p['batch_size'], 
                 self.p['model']['hidden_size'],
             ).to(self.device),
             torch.zeros(
-                self.p['model']['num_layers'],# * (2 if self.p['model']['bidirectional'] else 1), 
+                self.p['model']['num_layers'] * (2 if self.p['model']['bidirectional'] else 1),
                 self.p['batch_size'], 
                 self.p['model']['hidden_size'],
             ).to(self.device)
