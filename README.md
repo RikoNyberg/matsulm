@@ -4,7 +4,7 @@
 
 **MatsuLM** is a simple Neural Network Language Modeling (NNLM) toolkit to help the research and development of neural language models. MatsuLM is build on top of [PyTorch](https://github.com/pytorch/pytorch) and it is offering simplified tools to modify, train, and track NNLM training. 
 
-This tool was made for the [Department of Signal Processing and Acoustics](https://www.aalto.fi/en/department-of-signal-processing-and-acoustics) at [Aalto University](https://www.aalto.fi/en) as a Master's Thesis. The Master's Thesis can be found in here: [MatsuLM](https://riko.io/matsulm)
+This tool was made for the [Department of Signal Processing and Acoustics](https://www.aalto.fi/en/department-of-signal-processing-and-acoustics) at [Aalto University](https://www.aalto.fi/en) as a Master's Thesis. The Master's Thesis can be found in here: [MatsuLM](https://riko.io/matsulm.pdf)
 
 The tracking of the language model training results has been done with [Sacred](https://github.com/IDSIA/sacred) and the recommended tool for representing results is [OmniBoard](https://github.com/vivekratnavel/omniboard).
 
@@ -95,7 +95,7 @@ Ps. If you Omniboard website does not work right away, it might take a few minut
 
 # Referencing
 
-This repository contains the code used for [MatsuLM](https://riko.io/matsulm) master's thesis. If you use this code or results in your research, please cite as appropriate:
+This repository contains the code used for [MatsuLM](https://riko.io/matsulm.pdf) master's thesis. If you use this code or results in your research, please cite as appropriate:
 ```
 @article{nybergMatsulm,
   title={{MatsuLM neural language modeling toolkit}},
