@@ -17,7 +17,7 @@ pyparsing==2.4.7
 sacred==0.8.1
 six==1.15.0
 smmap==3.0.4
-torch==1.5.1
+torch==1.13.1
 torchvision==0.6.1
 wrapt==1.12.1
 zipp==3.1.0
